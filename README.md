@@ -27,7 +27,7 @@ This package requirements vary depending on the way that you want to install it 
 Alternatively, for the latest version, clone this repo and go into its directory, then execute `pip3 install .` :
 
 ```
-git clone https://github.com/ProGenNo/py-pgatk.git
+git clone https://github.com/ProGenNo/py-pgatk-UiB-fork.git
 cd py-pgatk
 # you might want to create a virtualenv for pypgatk before installing
 python3 -m pip install .
