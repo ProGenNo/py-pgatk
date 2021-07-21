@@ -175,7 +175,11 @@ def download_file(file_url: str, file_name: str, log: logging, no_unzip: bool, v
     try:
       downloaded_file, error_code = request.urlretrieve(file_url, file_name)
       log.debug("File downloaded -- " + downloaded_file)
+      if verbous:
+        print("[Ensembl Downloader] Downladed: ", downloaded_file)
       if downloaded_file.endswith('.gz') and not no_unzip:
+        if verbous:
+          print("[Ensembl Downloader] Unpacking file: ", downloaded_file)
         extracted_file = downloaded_file.replace('.gz','')
         with open(extracted_file, 'w') as outfile:
           outfile.write(gzip.decompress(open(downloaded_file, 'rb').read()).decode('utf-8'))

@@ -52,7 +52,7 @@ def ensembl_downloader(config_file, output_directory, folder_prefix_release,
     elif ensembl_name is not None:
         print(ensembl_name)
         
-    print("Options: ", end='')
+    print("Ensembl Downloader]: Options: ", end='')
     if skip_protein is not None and skip_protein:
         print("--skip_protein", end=' ')
     if skip_gtf is not None and skip_gtf:

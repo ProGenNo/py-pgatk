@@ -326,8 +326,11 @@ class EnsemblDataDownloadService(ParameterConfiguration):
       if grch37:
         species['assembly'] = 'GRCh37'
         species['release'] = '87'
-      file_name = '{}.{}.{}.gtf.gz'.format(species['name'][0].upper() + species['name'][1:], species['assembly'],
-                                           species['release'], )
+      #file_name = '{}.{}.{}.gtf.gz'.format(species['name'][0].upper() + species['name'][1:], species['assembly'],
+      #                                     species['release'], )
+      #.chr_patch_hapl_scaff
+      file_name = '{}.{}.{}.chr_patch_hapl_scaff.gtf.gz'.format(species['name'][0].upper() + species['name'][1:], species['assembly'],
+                                           species['release'])
       file_url = '{}/release-{}/gtf/{}/{}'.format(
         self.get_default_parameters()[self.CONFIG_KEY_DATA_DOWNLOADER][self.CONFIG_KEY_ENSEMBL_FTP][
           self.CONFIG_KEY_BASE_URL], species['release'], species['name'], file_name)
