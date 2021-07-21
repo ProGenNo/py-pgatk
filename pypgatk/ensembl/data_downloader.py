@@ -6,6 +6,8 @@ Some of the use cases for this module:
     2. Given a species ID, collect its GTF data, with the option of decompressing it or not.
 """
 
+## File modified by Jakub Vasicek (jakub.vasicek@uib.no)
+
 # App imports
 from json import loads
 from pypgatk.toolbox.general import ParameterConfiguration, check_create_folders, download_file

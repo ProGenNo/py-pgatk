@@ -3,6 +3,9 @@ This module implements some useful functions for the pipeline runner.
 
 @author ypriverol
 """
+
+## File modified by Jakub Vasicek (jakub.vasicek@uib.no)
+
 import logging
 import os
 import json

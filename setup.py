@@ -1,3 +1,5 @@
+## File modified by Jakub Vasicek (jakub.vasicek@uib.no)
+
 import io
 
 from setuptools import setup, find_packages
