@@ -30,7 +30,7 @@ Alternatively, for the latest version, clone this repo and go into its directory
 git clone https://github.com/ProGenNo/py-pgatk.git
 cd py-pgatk
 # you might want to create a virtualenv for pypgatk before installing
-pip3 install .
+python3 -m pip install .
 ```
 
 # Usage
