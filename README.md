@@ -13,11 +13,7 @@
 
 # Requirements:
 
-This package requirements vary depending on the way that you want to install it (all three are independent, you don't need all these requirements):
-
-- pip: if installation goes through pip, you will require Python3 and pip3 installed.
-- Bioconda: if installation goes through Bioconda, you will require that [conda is installed and configured to use bioconda channels](https://bioconda.github.io/user/index.html).
-- Docker container: to use pypgatk from its docker container you will need [Docker](https://docs.docker.com/install/) installed.
+- pip: you will require Python3 and pip3 installed.
 - Source code: to use and install from the source code directly, you will need to have git, Python3 and pip.
 
 # Installation
