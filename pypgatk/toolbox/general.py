@@ -148,7 +148,7 @@ def clear_cache():
   request.urlcleanup()
 
 
-def download_file(file_url: str, file_name: str, log: logging) -> str:
+def download_file(file_url: str, file_name: str, log: logging, no_unzip: bool) -> str:
   """
      Download file_url and move it to file_name, do nothing if file_name already exists.
 
@@ -169,7 +169,7 @@ def download_file(file_url: str, file_name: str, log: logging) -> str:
     try:
       downloaded_file, error_code = request.urlretrieve(file_url, file_name)
       log.debug("File downloaded -- " + downloaded_file)
-      if downloaded_file.endswith('.gz'):
+      if downloaded_file.endswith('.gz') and not no_unzip:
         extracted_file = downloaded_file.replace('.gz','')
         with open(extracted_file, 'w') as outfile:
           outfile.write(gzip.decompress(open(downloaded_file, 'rb').read()).decode('utf-8'))
