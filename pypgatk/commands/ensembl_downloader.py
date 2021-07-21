@@ -38,11 +38,36 @@ this_dir, this_filename = os.path.split(__file__)
               help='Ensembl name code to download, it can be use instead of taxonomy (e.g. homo_sapiens)', default='')
 @click.option('--grch37', help='Download a previous version GRCh37 of ensembl genomes', is_flag=True)
 @click.option('-nu', '--no_unzip', help='Do not run gunzip after download (files have to be unzipped manually afterwards)', is_flag=True)
+@click.option('-v', '--verbous', help='Display which files are being downloaded', is_flag=True)
 def ensembl_downloader(config_file, output_directory, folder_prefix_release,
                        taxonomy, list_taxonomies, skip_gtf, skip_protein,
                        skip_cds, skip_cdna, skip_ncrna, skip_dna, skip_vcf,
-                       ensembl_name, grch37=False, no_unzip=False):
+                       ensembl_name, grch37=False, no_unzip=False, verbous=False):
   """ This tool enables to download from enseml ftp the FASTA and GTF files"""
+  
+  if verbous:
+    print("[Ensembl Downloader]: Downloading files for ", end='')
+    if taxonomy is not None and taxonomy != '':
+        print(taxonomy)
+    elif ensembl_name is not None:
+        print(ensembl_name)
+        
+    print("Options: ", end='')
+    if skip_protein is not None and skip_protein:
+        print("--skip_protein", end=' ')
+    if skip_gtf is not None and skip_gtf:
+        print("--skip_gtf", end=' ')
+    if skip_cds is not None and skip_cds:
+        print("--skip_cds", end=' ')
+    if skip_cdna is not None and skip_cdna:
+        print("--skip_cdna", end=' ')
+    if skip_ncrna is not None and skip_ncrna:
+        print("--skip_ncrna", end=' ')
+    if skip_dna is not None and skip_dna:
+        print("--skip_dna", end=' ')
+    if skip_vcf is not None and skip_vcf:
+        print("--skip_vcf", end=' ')
+    print("")
 
   if config_file is None:
     msg = "The config file for the pipeline is missing, please provide one "
@@ -99,6 +124,6 @@ def ensembl_downloader(config_file, output_directory, folder_prefix_release,
     for taxonomy_info in list_of_taxonomies:
       print(taxonomy_info)
 
-  ensembl_download_service.download_database_by_species(grch37, no_unzip)
+  ensembl_download_service.download_database_by_species(grch37, no_unzip, verbous)
 
   logger.info("Pipeline Finish !!!")

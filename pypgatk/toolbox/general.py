@@ -151,7 +151,7 @@ def clear_cache():
   request.urlcleanup()
 
 
-def download_file(file_url: str, file_name: str, log: logging, no_unzip: bool) -> str:
+def download_file(file_url: str, file_name: str, log: logging, no_unzip: bool, verbous: bool) -> str:
   """
      Download file_url and move it to file_name, do nothing if file_name already exists.
 
@@ -165,6 +165,9 @@ def download_file(file_url: str, file_name: str, log: logging, no_unzip: bool) -
 
   if log is not None:
     log = logging
+
+  if verbous:
+    print("[Ensembl Downloader] Downloading file: ", file_url)
 
   remaining_download_tries = REMAINING_DOWNLOAD_TRIES
   downloaded_file = None
