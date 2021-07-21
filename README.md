@@ -22,45 +22,12 @@ This package requirements vary depending on the way that you want to install it 
 
 # Installation
 
-## pip
-
-You can install pypgatk with pip:
-
-```
-pip install pypgatk
-```
-
-## Bioconda
-
-You can install pypgatk with bioconda (please setup conda and the bioconda channel if you haven't first, as explained [here](https://bioconda.github.io/user/index.html)):
-
-```
-conda install pypgatk
-```
-
-## Available as a container
-
-You can use the pypgatk tool already setup on a Docker container. You need to choose from the available tags [here](https://quay.io/repository/biocontainers/pypgatk?tab=tags) and replace it in the call below where it says `<tag>`.
-
-```
-docker pull quay.io/biocontainers/pypgatk:<tag>
-```
-
-**NOTE**: Please note that Biocontainers containers do not have a latest tag, as such a docker pull/run without defining the tag will fail. For instance, a valid call would be (for version 0.0.2):
-
-```
-docker run -it quay.io/biocontainers/pypgatk:0.0.2--py_0
-```
-
-Inside the container, you can either use the Python interactive shell or the command line version (see below).
-
-
 ## Use latest source code
 
 Alternatively, for the latest version, clone this repo and go into its directory, then execute `pip3 install .` :
 
 ```
-git clone https://github.com/bigbio/py-pgatk
+git clone https://github.com/ProGenNo/py-pgatk.git
 cd py-pgatk
 # you might want to create a virtualenv for pypgatk before installing
 pip3 install .
