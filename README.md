@@ -9,7 +9,7 @@
 
 **pypgatk** is a Python library part of the [ProteoGenomics Analysis Toolkit](https://pgatk.readthedocs.io/en/latest). It provides different bioinformatics tools for proteogenomics data analysis.
 
-**This is a private fork for the purposes of our project**
+**This is a fork made for the purposes of a proteogenomics project at University of Bergen**
 
 # Requirements:
 
