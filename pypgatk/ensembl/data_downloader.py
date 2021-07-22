@@ -352,6 +352,9 @@ class EnsemblDataDownloadService(ParameterConfiguration):
     :param species:
     :return:
     """
+    
+    MAX_CHROMOSOMES_TO_DOWNLOAD = 3
+    
     files = []
     try:
       file_name = '{}_incl_consequences.vcf.gz'.format(species['name'])
@@ -373,7 +376,7 @@ class EnsemblDataDownloadService(ParameterConfiguration):
         if downloaded_file is not None:
           # if chr1 is downloaded then try all others
           files.append(downloaded_file)
-          for chrN in range(2, 23):  # chr2-22
+          for chrN in range(2, MAX_CHROMOSOMES_TO_DOWNLOAD):  # chr2-22
             file_name = '{}_incl_consequences-chr{}.vcf.gz'.format(species['name'], chrN)
             files.append(
               download_file(file_url + file_name, self.get_local_path_root_ensembl_repo() + '/' + file_name,
