@@ -353,7 +353,7 @@ class EnsemblDataDownloadService(ParameterConfiguration):
     :return:
     """
     
-    MAX_CHROMOSOMES_TO_DOWNLOAD = 3
+    MAX_CHROMOSOMES_TO_DOWNLOAD = 2
     
     files = []
     try:
@@ -376,20 +376,20 @@ class EnsemblDataDownloadService(ParameterConfiguration):
         if downloaded_file is not None:
           # if chr1 is downloaded then try all others
           files.append(downloaded_file)
-          for chrN in range(2, MAX_CHROMOSOMES_TO_DOWNLOAD):  # chr2-22
+          for chrN in range(2, MAX_CHROMOSOMES_TO_DOWNLOAD+1):  # chr2-22
             file_name = '{}_incl_consequences-chr{}.vcf.gz'.format(species['name'], chrN)
             files.append(
               download_file(file_url + file_name, self.get_local_path_root_ensembl_repo() + '/' + file_name,
                             self.get_logger(), no_unzip, verbous))
-          file_name = '{}_incl_consequences-chr{}.vcf.gz'.format(species['name'], 'X')
-          files.append(download_file(file_url + file_name, self.get_local_path_root_ensembl_repo() + '/' + file_name,
-                                     self.get_logger(), no_unzip, verbous))
-          file_name = '{}_incl_consequences-chr{}.vcf.gz'.format(species['name'], 'Y')
-          files.append(download_file(file_url + file_name, self.get_local_path_root_ensembl_repo() + '/' + file_name,
-                                     self.get_logger(), no_unzip, verbous))
-          file_name = '{}_incl_consequences-chr{}.vcf.gz'.format(species['name'], 'MT')
-          files.append(download_file(file_url + file_name, self.get_local_path_root_ensembl_repo() + '/' + file_name,
-                                     self.get_logger(), no_unzip, verbous))
+          #file_name = '{}_incl_consequences-chr{}.vcf.gz'.format(species['name'], 'X')
+          #files.append(download_file(file_url + file_name, self.get_local_path_root_ensembl_repo() + '/' + file_name,
+          #                           self.get_logger(), no_unzip, verbous))
+          #file_name = '{}_incl_consequences-chr{}.vcf.gz'.format(species['name'], 'Y')
+          #files.append(download_file(file_url + file_name, self.get_local_path_root_ensembl_repo() + '/' + file_name,
+          #                           self.get_logger(), no_unzip, verbous))
+          #file_name = '{}_incl_consequences-chr{}.vcf.gz'.format(species['name'], 'MT')
+          #files.append(download_file(file_url + file_name, self.get_local_path_root_ensembl_repo() + '/' + file_name,
+          #                           self.get_logger(), no_unzip, verbous))
 
     except KeyError:
       self.get_logger().debug("No valid info is available species: ", species)
