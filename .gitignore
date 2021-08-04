@@ -113,3 +113,6 @@ pypgatk/database_cbioportal/
 pypgatk/database_cosmic/
 pypgatk/config/private/
 .pypirc
+
+# VS code
+.vscode

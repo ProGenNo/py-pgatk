@@ -4,6 +4,7 @@ import vcf
 from Bio import SeqIO
 from Bio.Seq import Seq
 from pybedtools import BedTool
+import json
 from pypgatk.toolbox.general import ParameterConfiguration
 
 
@@ -282,7 +283,7 @@ class EnsemblDataService(ParameterConfiguration):
                          verbose=True,
                          force=False)
     except Exception as e:  # already exists
-      print("Databae already exists" + str(e), gtf_db_file)
+      print(str(e), gtf_db_file)
 
     db = gffutils.FeatureDB(gtf_db_file)
     return db
@@ -518,6 +519,7 @@ class EnsemblDataService(ParameterConfiguration):
       self._consequence_index = None
 
     db = self.parse_gtf(gene_annotations_gtf, gene_annotations_gtf.replace('.gtf', '.db'))
+    print("This is a modified function for processing the VCF file.")
 
     transcripts_dict = SeqIO.index(input_fasta, "fasta", key_function=self.get_key)
     # handle cases where the transcript has version in the GTF but not in the VCF
@@ -526,6 +528,9 @@ class EnsemblDataService(ParameterConfiguration):
       vcf_reader = vcf.Reader(open(vcf_file, 'r'))
 
       for record in vcf_reader:
+        #msg = "Processing: {}".format(record)
+        #self.get_logger().debug(msg)
+
         if record.ALT == [None] or record.REF == [None]:
           msg = "Invalid VCF record, skipping: {}".format(record)
           self.get_logger().debug(msg)
@@ -533,6 +538,8 @@ class EnsemblDataService(ParameterConfiguration):
         if not self._ignore_filters:
           if record.FILTER:  # if not PASS: None and empty means PASS
             if not (set(record.FILTER[0].split(',')) <= set(self._accepted_filters)):
+              msg = "Filtered out, skipping: {}".format(record)
+              self.get_logger().debug(msg)
               continue
 
         # only process variants above a given allele frequency threshold if the AF string is not empty
@@ -542,11 +549,15 @@ class EnsemblDataService(ParameterConfiguration):
             af = float(record.INFO[self._af_field])
           except TypeError:
             af = float(record.INFO[self._af_field][0])
-          except KeyError:
+          except KeyError:            
+            msg = "KeyError (AF field not found in the record): {}".format(json.dumps(record.INFO))
+            self.get_logger().debug(msg)
             continue
 
           # check if the AF passed the threshold
           if af < self._af_threshold:
+            msg = "Filtered out by AF threshold, skipping: {}".format(record)
+            self.get_logger().debug(msg)
             continue
 
         trans_table = self._translation_table
@@ -581,11 +592,15 @@ class EnsemblDataService(ParameterConfiguration):
             self.get_logger().debug(msg)
             continue
           if transcript_id == "":
+            msg = "Transcript ID is empty, skipping: {}".format(record)
+            self.get_logger().debug(msg)
             continue
 
           try:
             transcript_id_v = transcript_id_mapping[transcript_id]
           except KeyError:
+            msg = "KeyError (Transcript ID key not found): {}".format(record)
+            self.get_logger().debug(msg)
             transcript_id_v = transcript_id
 
           try:
@@ -614,19 +629,27 @@ class EnsemblDataService(ParameterConfiguration):
                                                                             self._biotype_str,
                                                                             feature_types)
           if chrom is None:  # the record info was not found
+            msg = "Chrom. info not found, skipping: {}".format(record)
+            self.get_logger().debug(msg)
             continue
           # skip transcripts with unwanted consequences
           if self._consequence_index is not None:
             if (consequence in self._exclude_consequences or
               (consequence not in self._include_consequences and
                self._include_consequences != ['all'])):
+              msg = "Transcript with unwanted consequences, skipping: {}".format(record)
+              self.get_logger().debug(msg)
               continue
 
           for alt in record.ALT:  # in cases of multiple alternative alleles consider all
             if alt is None:
+              msg = "ALT info not found, skipping: {}".format(record)
+              self.get_logger().debug(msg)
               continue
             if transcript_id + str(record.REF) + str(
               alt) in processed_transcript_allele:  # because VEP reports affected transcripts per alt allele
+              msg = "Error at line 642, skipping: {}".format(record)
+              self.get_logger().debug(msg)
               continue
 
             processed_transcript_allele.append(transcript_id + str(record.REF) + str(alt))
@@ -639,11 +662,19 @@ class EnsemblDataService(ParameterConfiguration):
               self.get_logger().debug(msg)
               continue
 
+            #msg = "Passed tests: {}".format(record)
+            #self.get_logger().debug(msg)
+
             if (chrom.lstrip("chr") == str(record.CHROM).lstrip("chr") and
               overlap_flag):
               coding_ref_seq, coding_alt_seq = self.get_altseq(ref_seq, Seq(str(record.REF)),
                                                                Seq(str(alt)), int(record.POS), strand,
                                                                features_info, cds_info)
+              #msg = "Coding ref seq: {}".format(coding_ref_seq)
+              #self.get_logger().debug(msg)
+              #msg = "Coding alt seq: {}".format(coding_alt_seq)
+              #self.get_logger().debug(msg)
+
               if coding_alt_seq != "":
                 ref_orfs, alt_orfs = self.get_orfs_vcf(coding_ref_seq, coding_alt_seq, trans_table,
                                                        num_orfs)
@@ -658,6 +689,9 @@ class EnsemblDataService(ParameterConfiguration):
                                   seqs=alt_orfs,
                                   prots_fn=prots_fn,
                                   seqs_filter=ref_orfs)
+                
+                #msg = "Writing output for: {}".format(record)
+                #self.get_logger().debug(msg)
 
                 if self._report_reference_seq:
                   self.write_output(seq_id=transcript_id_v,
