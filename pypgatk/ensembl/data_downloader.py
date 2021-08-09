@@ -49,6 +49,9 @@ class EnsemblDataDownloadService(ParameterConfiguration):
   CONFIG_KEY_SKIP_NCRNA = 'skip_ncrna'
   CONFIG_KEY_SKIP_DNA = 'skip_DNA'
   CONFIG_KEY_SKIP_VCF = 'skip_vcf'
+  CONFIG_KEY_VERBOUS = 'verbous'
+  CONFIG_KEY_NO_UNZIP = 'no_unzip'
+  CONFIG_KEY_VCF_CHR = 'vcf_chr'
 
   def __init__(self, config_file, pipeline_arguments):
     """
@@ -119,25 +122,25 @@ class EnsemblDataDownloadService(ParameterConfiguration):
             self.get_logger().debug(
               "Downloading the data for the specie -- " + species[self.CONFIG_REST_API_TAXON_ID])
             if not self.get_pipeline_parameters()[self.CONFIG_KEY_SKIP_PROTEIN]:
-              prot_files = self.get_pep_files(species, grch37, no_unzip, verbous)
+              prot_files = self.get_pep_files(species, grch37)
               files.extend(prot_files)
             if not self.get_pipeline_parameters()[self.CONFIG_KEY_SKIP_GTF]:
-              gtf_files = self.get_gtf_files(species, grch37, no_unzip, verbous)
+              gtf_files = self.get_gtf_files(species, grch37)
               files.extend(gtf_files)
             if not self.get_pipeline_parameters()[self.CONFIG_KEY_SKIP_CDS]:
-              cds_files = self.get_cds_files(species, grch37, no_unzip, verbous)
+              cds_files = self.get_cds_files(species, grch37)
               files.extend(cds_files)
             if not self.get_pipeline_parameters()[self.CONFIG_KEY_SKIP_CDNA]:
-              cdna_files = self.get_cdna_files(species, grch37, no_unzip, verbous)
+              cdna_files = self.get_cdna_files(species, grch37)
               files.extend(cdna_files)
             if not self.get_pipeline_parameters()[self.CONFIG_KEY_SKIP_NCRNA]:
-              ncrna_files = self.get_ncrna_files(species, grch37, no_unzip, verbous)
+              ncrna_files = self.get_ncrna_files(species, grch37)
               files.extend(ncrna_files)
             if not self.get_pipeline_parameters()[self.CONFIG_KEY_SKIP_DNA]:
-              dna_files = self.get_genome_assembly_files(species, grch37, no_unzip, verbous)
+              dna_files = self.get_genome_assembly_files(species, grch37)
               files.extend(dna_files)
             if not self.get_pipeline_parameters()[self.CONFIG_KEY_SKIP_VCF]:
-              vcf_files = self.get_vcf_files(species, no_unzip, verbous)
+              vcf_files = self.get_vcf_files(species)
               files.extend(vcf_files)
 
             self.get_logger().debug("Files downloaded -- " + ",".join(
@@ -150,25 +153,25 @@ class EnsemblDataDownloadService(ParameterConfiguration):
             self.get_logger().debug(
               "Downloading the data for the specie --" + species[self.CONFIG_REST_API_NAME])
             if not self.get_pipeline_parameters()[self.CONFIG_KEY_SKIP_PROTEIN]:
-              prot_files = self.get_pep_files(species, grch37, no_unzip, verbous)
+              prot_files = self.get_pep_files(species, grch37)
               files.extend(prot_files)
             if not self.get_pipeline_parameters()[self.CONFIG_KEY_SKIP_GTF]:
-              gtf_files = self.get_gtf_files(species, grch37, no_unzip, verbous)
+              gtf_files = self.get_gtf_files(species, grch37)
               files.extend(gtf_files)
             if not self.get_pipeline_parameters()[self.CONFIG_KEY_SKIP_CDS]:
-              cds_files = self.get_cds_files(species, grch37, no_unzip, verbous)
+              cds_files = self.get_cds_files(species, grch37)
               files.extend(cds_files)
             if not self.get_pipeline_parameters()[self.CONFIG_KEY_SKIP_CDNA]:
-              cdna_files = self.get_cdna_files(species, grch37, no_unzip, verbous)
+              cdna_files = self.get_cdna_files(species, grch37)
               files.extend(cdna_files)
             if not self.get_pipeline_parameters()[self.CONFIG_KEY_SKIP_NCRNA]:
-              ncrna_files = self.get_ncrna_files(species, grch37, no_unzip, verbous)
+              ncrna_files = self.get_ncrna_files(species, grch37)
               files.extend(ncrna_files)
             if not self.get_pipeline_parameters()[self.CONFIG_KEY_SKIP_DNA]:
-              dna_files = self.get_genome_assembly_files(species, grch37, no_unzip, verbous)
+              dna_files = self.get_genome_assembly_files(species, grch37)
               files.extend(dna_files)
             if not self.get_pipeline_parameters()[self.CONFIG_KEY_SKIP_VCF]:
-              vcf_files = self.get_vcf_files(species, no_unzip, verbous)
+              vcf_files = self.get_vcf_files(species)
               files.extend(vcf_files)
 
             self.get_logger().debug("Files downloaded -- " + ",".join(
@@ -179,25 +182,25 @@ class EnsemblDataDownloadService(ParameterConfiguration):
         self.get_logger().debug(
           "Downloading the data for the specie --" + species[self.CONFIG_REST_API_TAXON_ID])
         if not self.get_pipeline_parameters()[self.CONFIG_KEY_SKIP_PROTEIN]:
-          prot_files = self.get_pep_files(species, grch37, no_unzip, verbous)
+          prot_files = self.get_pep_files(species, grch37)
           files.extend(prot_files)
         if not self.get_pipeline_parameters()[self.CONFIG_KEY_SKIP_GTF]:
-          gtf_files = self.get_gtf_files(species, grch37, no_unzip, verbous)
+          gtf_files = self.get_gtf_files(species, grch37)
           files.extend(gtf_files)
         if not self.get_pipeline_parameters()[self.CONFIG_KEY_SKIP_CDS]:
-          cds_files = self.get_cds_files(species, grch37, no_unzip, verbous)
+          cds_files = self.get_cds_files(species, grch37)
           files.extend(cds_files)
         if not self.get_pipeline_parameters()[self.CONFIG_KEY_SKIP_CDNA]:
-          cdna_files = self.get_cdna_files(species, grch37, no_unzip, verbous)
+          cdna_files = self.get_cdna_files(species, grch37)
           files.extend(cdna_files)
         if not self.get_pipeline_parameters()[self.CONFIG_KEY_SKIP_NCRNA]:
-          ncrna_files = self.get_ncrna_files(species, grch37, no_unzip, verbous)
+          ncrna_files = self.get_ncrna_files(species, grch37)
           files.extend(ncrna_files)
         if not self.get_pipeline_parameters()[self.CONFIG_KEY_SKIP_DNA]:
-          dna_files = self.get_genome_assembly_files(species, grch37, no_unzip, verbous)
+          dna_files = self.get_genome_assembly_files(species, grch37)
           files.extend(dna_files)
         if not self.get_pipeline_parameters()[self.CONFIG_KEY_SKIP_VCF]:
-          vcf_files = self.get_vcf_files(species, no_unzip, verbous)
+          vcf_files = self.get_vcf_files(species)
           files.extend(vcf_files)
 
         self.get_logger().debug("Files downloaded -- " + ",".join(
@@ -206,12 +209,14 @@ class EnsemblDataDownloadService(ParameterConfiguration):
 
     return total_files
 
-  def get_cds_files(self, species: dict, grch37=False, no_unzip=False, verbous=False) -> list:
+  def get_cds_files(self, species: dict, grch37=False) -> list:
     """
     Get the cds files for a specific species object.
     :return: List of files names.
     """
     files = []
+    no_unzip = self.get_pipeline_parameters()[self.CONFIG_KEY_NO_UNZIP]
+    verbous = self.get_pipeline_parameters()[self.CONFIG_KEY_VERBOUS]
     try:
       if grch37:
         species['assembly'] = 'GRCh37'
@@ -231,12 +236,14 @@ class EnsemblDataDownloadService(ParameterConfiguration):
 
     return files
 
-  def get_cdna_files(self, species: dict, grch37=False, no_unzip=False, verbous=False) -> list:
+  def get_cdna_files(self, species: dict, grch37=False) -> list:
     """
     Get the cds files for a specific species object.
     :return: List of files names.
     """
     files = []
+    no_unzip = self.get_pipeline_parameters()[self.CONFIG_KEY_NO_UNZIP]
+    verbous = self.get_pipeline_parameters()[self.CONFIG_KEY_VERBOUS]
     try:
       if grch37:
         species['assembly'] = 'GRCh37'
@@ -258,12 +265,14 @@ class EnsemblDataDownloadService(ParameterConfiguration):
 
     return files
 
-  def get_ncrna_files(self, species: dict, grch37=False, no_unzip=False, verbous=False) -> list:
+  def get_ncrna_files(self, species: dict, grch37=False) -> list:
     """
     Get the cds files for a specific species object.
     :return: List of files names.
     """
     files = []
+    no_unzip = self.get_pipeline_parameters()[self.CONFIG_KEY_NO_UNZIP]
+    verbous = self.get_pipeline_parameters()[self.CONFIG_KEY_VERBOUS]
     try:
       if grch37:
         species['assembly'] = 'GRCh37'
@@ -286,12 +295,14 @@ class EnsemblDataDownloadService(ParameterConfiguration):
 
     return files
 
-  def get_pep_files(self, species: dict, grch37=False, no_unzip=False, verbous=False) -> list:
+  def get_pep_files(self, species: dict, grch37=False) -> list:
     """
     Get the peptide files for a specific species object.
     :return: List of files names.
     """
     files = []
+    no_unzip = self.get_pipeline_parameters()[self.CONFIG_KEY_NO_UNZIP]
+    verbous = self.get_pipeline_parameters()[self.CONFIG_KEY_VERBOUS]
     try:
       # TODO: Would be better to check by API the assembly version
       if grch37:
@@ -314,7 +325,7 @@ class EnsemblDataDownloadService(ParameterConfiguration):
 
     return files
 
-  def get_gtf_files(self, species: dict, grch37=False, no_unzip=False, verbous=False) -> list:
+  def get_gtf_files(self, species: dict, grch37=False) -> list:
     """
     This method retrieve the gtf files for a specific specie object
     :param grch37: if the GrCh37 genome assembly is desired enable to true
@@ -322,6 +333,8 @@ class EnsemblDataDownloadService(ParameterConfiguration):
     :return:
     """
     files = []
+    no_unzip = self.get_pipeline_parameters()[self.CONFIG_KEY_NO_UNZIP]
+    verbous = self.get_pipeline_parameters()[self.CONFIG_KEY_VERBOUS]
     try:
       if grch37:
         species['assembly'] = 'GRCh37'
@@ -353,9 +366,25 @@ class EnsemblDataDownloadService(ParameterConfiguration):
     :return:
     """
     
-    MAX_CHROMOSOMES_TO_DOWNLOAD = 2
+    #MAX_CHROMOSOMES_TO_DOWNLOAD = 2
     
     files = []
+    no_unzip = self.get_pipeline_parameters()[self.CONFIG_KEY_NO_UNZIP]
+    verbous = self.get_pipeline_parameters()[self.CONFIG_KEY_VERBOUS]
+    chrs = self.get_pipeline_parameters()[self.CONFIG_KEY_VCF_CHR]
+
+    print("Chrs param:", chrs)
+
+    if chrs != 'all' and chrs != ['all']:
+      chrs = chrs.split(",")
+    else:
+      chrs = list(range(1, 23))
+      chrs.append('X')
+      chrs.append('Y')
+      chrs.append('MT')
+
+    print("Downloading VCF files for chromosomes: ", chrs)
+
     try:
       file_name = '{}_incl_consequences.vcf.gz'.format(species['name'])
       file_url = '{}/release-{}/variation/vcf/{}/'.format(
@@ -368,19 +397,30 @@ class EnsemblDataDownloadService(ParameterConfiguration):
         files.append(downloaded_file)
 
       elif species['name'] == 'homo_sapiens':
-        # for humans the variants are stored per chromosome, so we need to download them all and combine them into one file here"
-        chrN = 1
-        file_name = '{}_incl_consequences-chr{}.vcf.gz'.format(species['name'], chrN)
-        downloaded_file = download_file(file_url + file_name,
+        # for humans the variants are stored per chromosome, so we need to download them all and combine them into one file here
+
+        for chrN in chrs:
+          file_name = '{}_incl_consequences-chr{}.vcf.gz'.format(species['name'], chrN)
+          downloaded_file = download_file(file_url + file_name,
                                         self.get_local_path_root_ensembl_repo() + '/' + file_name, self.get_logger(), no_unzip, verbous)
-        if downloaded_file is not None:
+          if downloaded_file is not None:
+            files.append(downloaded_file)
+          else:
+            print('File {} could not be downloaded!'.format(file_name))
+            #break
+
+        #chrN = 1
+        #file_name = '{}_incl_consequences-chr{}.vcf.gz'.format(species['name'], chrN)
+        #downloaded_file = download_file(file_url + file_name,
+        #                                self.get_local_path_root_ensembl_repo() + '/' + file_name, self.get_logger(), no_unzip, verbous)
+        #if downloaded_file is not None:
           # if chr1 is downloaded then try all others
-          files.append(downloaded_file)
-          for chrN in range(2, MAX_CHROMOSOMES_TO_DOWNLOAD+1):  # chr2-22
-            file_name = '{}_incl_consequences-chr{}.vcf.gz'.format(species['name'], chrN)
-            files.append(
-              download_file(file_url + file_name, self.get_local_path_root_ensembl_repo() + '/' + file_name,
-                            self.get_logger(), no_unzip, verbous))
+        #  files.append(downloaded_file)
+        #  for chrN in range(2, MAX_CHROMOSOMES_TO_DOWNLOAD+1):  # chr2-22
+        #    file_name = '{}_incl_consequences-chr{}.vcf.gz'.format(species['name'], chrN)
+        #    files.append(
+        #      download_file(file_url + file_name, self.get_local_path_root_ensembl_repo() + '/' + file_name,
+        #                    self.get_logger(), no_unzip, verbous))
           #file_name = '{}_incl_consequences-chr{}.vcf.gz'.format(species['name'], 'X')
           #files.append(download_file(file_url + file_name, self.get_local_path_root_ensembl_repo() + '/' + file_name,
           #                           self.get_logger(), no_unzip, verbous))
@@ -396,7 +436,7 @@ class EnsemblDataDownloadService(ParameterConfiguration):
 
     return files
 
-  def get_genome_assembly_files(self, species: dict, grch37=False, no_unzip=False, verbous=False) -> list:
+  def get_genome_assembly_files(self, species: dict, grch37=False) -> list:
     """
     This method retrieve the genome assembly files for a specific specie object
     :param grch37: if the GrCh37 genome assembly is desired enable to true
@@ -404,6 +444,8 @@ class EnsemblDataDownloadService(ParameterConfiguration):
     :return:
     """
     files = []
+    no_unzip = self.get_pipeline_parameters()[self.CONFIG_KEY_NO_UNZIP]
+    verbous = self.get_pipeline_parameters()[self.CONFIG_KEY_VERBOUS]
     try:
       if grch37:
         species['assembly'] = 'GRCh37'

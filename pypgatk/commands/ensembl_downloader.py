@@ -34,6 +34,7 @@ this_dir, this_filename = os.path.split(__file__)
 @click.option('-sn', '--skip_ncrna', help='Skip the ncRNA file download', is_flag=True)
 @click.option('-sd', '--skip_dna', help='Skip the DNA (reference genome assembly) file download', is_flag=True)
 @click.option('-sv', '--skip_vcf', help='Skip the VCF variant file', is_flag=True)
+@click.option('-vchr', '--vcf_chr', help='Specify which chromosome VCF to download. Give a comma-separated list, or "all" (default value).', default='all')
 @click.option('-en', '--ensembl_name',
               help='Ensembl name code to download, it can be use instead of taxonomy (e.g. homo_sapiens)', default='')
 @click.option('--grch37', help='Download a previous version GRCh37 of ensembl genomes', is_flag=True)
@@ -41,7 +42,7 @@ this_dir, this_filename = os.path.split(__file__)
 @click.option('-v', '--verbous', help='Display which files are being downloaded', is_flag=True)
 def ensembl_downloader(config_file, output_directory, folder_prefix_release,
                        taxonomy, list_taxonomies, skip_gtf, skip_protein,
-                       skip_cds, skip_cdna, skip_ncrna, skip_dna, skip_vcf,
+                       skip_cds, skip_cdna, skip_ncrna, skip_dna, skip_vcf, vcf_chr,
                        ensembl_name, grch37=False, no_unzip=False, verbous=False):
   """ This tool enables to download from enseml ftp the FASTA and GTF files"""
   
@@ -52,7 +53,7 @@ def ensembl_downloader(config_file, output_directory, folder_prefix_release,
     elif ensembl_name is not None:
         print(ensembl_name)
         
-    print("Ensembl Downloader]: Options: ", end='')
+    print("[Ensembl Downloader]: Options: ", end='')
     if skip_protein is not None and skip_protein:
         print("--skip_protein", end=' ')
     if skip_gtf is not None and skip_gtf:
@@ -114,6 +115,17 @@ def ensembl_downloader(config_file, output_directory, folder_prefix_release,
     pipeline_arguments[EnsemblDataDownloadService.CONFIG_KEY_SKIP_VCF] = True
   else:
     pipeline_arguments[EnsemblDataDownloadService.CONFIG_KEY_SKIP_VCF] = False
+  if no_unzip is not None and no_unzip:
+    pipeline_arguments[EnsemblDataDownloadService.CONFIG_KEY_NO_UNZIP] = True
+  else:
+    pipeline_arguments[EnsemblDataDownloadService.CONFIG_KEY_NO_UNZIP] = False
+  if verbous is not None and verbous:
+    pipeline_arguments[EnsemblDataDownloadService.CONFIG_KEY_VERBOUS] = True
+  else:
+    pipeline_arguments[EnsemblDataDownloadService.CONFIG_KEY_VERBOUS] = False
+  if vcf_chr is not None:
+    pipeline_arguments[EnsemblDataDownloadService.CONFIG_KEY_VCF_CHR] = vcf_chr
+
 
   ensembl_download_service = EnsemblDataDownloadService(config_file, pipeline_arguments)
 
@@ -124,6 +136,6 @@ def ensembl_downloader(config_file, output_directory, folder_prefix_release,
     for taxonomy_info in list_of_taxonomies:
       print(taxonomy_info)
 
-  ensembl_download_service.download_database_by_species(grch37, no_unzip, verbous)
+  ensembl_download_service.download_database_by_species(grch37)
 
   logger.info("Pipeline Finish !!!")
