@@ -519,7 +519,7 @@ class EnsemblDataService(ParameterConfiguration):
       self._consequence_index = None
 
     db = self.parse_gtf(gene_annotations_gtf, gene_annotations_gtf.replace('.gtf', '.db'))
-    print("This is a modified function for processing the VCF file.")
+    # print("This is a modified function for processing the VCF file.")
 
     transcripts_dict = SeqIO.index(input_fasta, "fasta", key_function=self.get_key)
     # handle cases where the transcript has version in the GTF but not in the VCF
