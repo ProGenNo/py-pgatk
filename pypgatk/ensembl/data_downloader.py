@@ -373,9 +373,7 @@ class EnsemblDataDownloadService(ParameterConfiguration):
     verbous = self.get_pipeline_parameters()[self.CONFIG_KEY_VERBOUS]
     chrs = self.get_pipeline_parameters()[self.CONFIG_KEY_VCF_CHR]
 
-    print("Chrs param:", chrs)
-
-    if chrs != 'all' and chrs != ['all']:
+    if chrs != 'all':
       chrs = chrs.split(",")
     else:
       chrs = list(range(1, 23))
@@ -383,7 +381,7 @@ class EnsemblDataDownloadService(ParameterConfiguration):
       chrs.append('Y')
       chrs.append('MT')
 
-    print("Downloading VCF files for chromosomes: ", chrs)
+    print("Downloading VCF files for chromosomes: ", ", ".join(chrs))
 
     try:
       file_name = '{}_incl_consequences.vcf.gz'.format(species['name'])
