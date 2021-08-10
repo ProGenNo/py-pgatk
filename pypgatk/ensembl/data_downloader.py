@@ -382,19 +382,21 @@ class EnsemblDataDownloadService(ParameterConfiguration):
       chrs.append('MT')
 
     print("Downloading VCF files for chromosomes: ", ", ".join(chrs))
+    
+    file_url = '{}/release-{}/variation/vcf/{}/'.format(
+      self.get_default_parameters()[self.CONFIG_KEY_DATA_DOWNLOADER][self.CONFIG_KEY_ENSEMBL_FTP][
+        self.CONFIG_KEY_BASE_URL], species['release'], species['name'])
 
     try:
-      file_name = '{}_incl_consequences.vcf.gz'.format(species['name'])
-      file_url = '{}/release-{}/variation/vcf/{}/'.format(
-        self.get_default_parameters()[self.CONFIG_KEY_DATA_DOWNLOADER][self.CONFIG_KEY_ENSEMBL_FTP][
-          self.CONFIG_KEY_BASE_URL], species['release'], species['name'])
+      if species['name'] != 'homo_sapiens':
+        file_name = '{}_incl_consequences.vcf.gz'.format(species['name'])
 
-      downloaded_file = download_file(file_url + file_name, self.get_local_path_root_ensembl_repo() + '/' + file_name,
-                                      self.get_logger(), no_unzip, verbous)
-      if downloaded_file is not None:
-        files.append(downloaded_file)
+        downloaded_file = download_file(file_url + file_name, self.get_local_path_root_ensembl_repo() + '/' + file_name,
+                                        self.get_logger(), no_unzip, verbous)
+        if downloaded_file is not None:
+          files.append(downloaded_file)
 
-      elif species['name'] == 'homo_sapiens':
+      else:
         # for humans the variants are stored per chromosome, so we need to download them all and combine them into one file here
 
         for chrN in chrs:
