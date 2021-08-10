@@ -15,6 +15,7 @@ class EnsemblDataService(ParameterConfiguration):
   MITO_TRANSLATION_TABLE = "mito_translation_table"
   HEADER_VAR_PREFIX = "var_prefix"
   REPORT_REFERENCE_SEQ = "report_ref_seq"
+  VERBOUS_DEBUG = "verbous_debug"
   PROTEIN_DB_OUTPUT = "proteindb_output_file"
   ANNOTATION_FIELD_NAME = "annotation_field_name"
   AF_FIELD = "af_field"
@@ -518,6 +519,10 @@ class EnsemblDataService(ParameterConfiguration):
       self._transcript_index = 0
       self._consequence_index = None
 
+    verbous = self.get_pipeline_parameters()[self.VERBOUS_DEBUG]
+    if (verbous):
+      print("Verbous debug output.")
+
     db = self.parse_gtf(gene_annotations_gtf, gene_annotations_gtf.replace('.gtf', '.db'))
     # print("This is a modified function for processing the VCF file.")
 
@@ -531,15 +536,17 @@ class EnsemblDataService(ParameterConfiguration):
         #msg = "Processing: {}".format(record)
         #self.get_logger().debug(msg)
 
-        if record.ALT == [None] or record.REF == [None]:
-          msg = "Invalid VCF record, skipping: {}".format(record)
-          self.get_logger().debug(msg)
+        if record.ALT == [None] or record.REF == [None]:          
+          if (verbous):
+            msg = "Invalid VCF record, skipping: {}".format(record)
+            self.get_logger().debug(msg)
           continue
         if not self._ignore_filters:
           if record.FILTER:  # if not PASS: None and empty means PASS
             if not (set(record.FILTER[0].split(',')) <= set(self._accepted_filters)):
-              msg = "Filtered out, skipping: {}".format(record)
-              self.get_logger().debug(msg)
+              if (verbous):
+                msg = "Filtered out, skipping: {}".format(record)
+                self.get_logger().debug(msg)
               continue
 
         # only process variants above a given allele frequency threshold if the AF string is not empty
@@ -549,15 +556,17 @@ class EnsemblDataService(ParameterConfiguration):
             af = float(record.INFO[self._af_field])
           except TypeError:
             af = float(record.INFO[self._af_field][0])
-          except KeyError:            
-            msg = "KeyError (AF field not found in the record): {}".format(json.dumps(record.INFO))
-            self.get_logger().debug(msg)
+          except KeyError:       
+            if (verbous):     
+              msg = "KeyError (AF field not found in the record): {}".format(json.dumps(record.INFO))
+              self.get_logger().debug(msg)
             continue
 
           # check if the AF passed the threshold
           if af < self._af_threshold:
-            msg = "Filtered out by AF threshold, skipping: {}".format(record)
-            self.get_logger().debug(msg)
+            if (verbous):
+              msg = "Filtered out by AF threshold, skipping: {}".format(record)
+              self.get_logger().debug(msg)
             continue
 
         trans_table = self._translation_table
@@ -568,9 +577,10 @@ class EnsemblDataService(ParameterConfiguration):
         processed_transcript_allele = []
         try:
           transcript_records = record.INFO[self._annotation_field_name]
-        except KeyError:#no overlapping feature was found
-          msg = "skipped record {}, no annotation feature was found".format(record)
-          self.get_logger().debug(msg)
+        except KeyError:#no overlapping feature was found          
+          if (verbous):
+            msg = "skipped record {}, no annotation feature was found".format(record)
+            self.get_logger().debug(msg)
           continue
 
         for transcript_record in transcript_records:
@@ -578,38 +588,43 @@ class EnsemblDataService(ParameterConfiguration):
           try:
             consequence = transcript_info[self._consequence_index]
             consequences.append(consequence)
-          except IndexError:
-            msg = "Give a valid index for the consequence in the INFO field for: {}".format(transcript_record)
-            self.get_logger().debug(msg)
+          except IndexError:          
+            if (verbous):
+              msg = "Give a valid index for the consequence in the INFO field for: {}".format(transcript_record)
+              self.get_logger().debug(msg)
             continue
           except TypeError:
               pass
 
           try:
             transcript_id = transcript_info[self._transcript_index]
-          except IndexError:
-            msg = "Give a valid index for the Transcript ID in the INFO field for: {}".format(transcript_record)
-            self.get_logger().debug(msg)
+          except IndexError:          
+            if (verbous):
+              msg = "Give a valid index for the Transcript ID in the INFO field for: {}".format(transcript_record)
+              self.get_logger().debug(msg)
             continue
-          if transcript_id == "":
-            msg = "Transcript ID is empty, skipping: {}".format(record)
-            self.get_logger().debug(msg)
+          if transcript_id == "":            
+            if (verbous):
+              msg = "Transcript ID is empty, skipping: {}".format(record)
+              self.get_logger().debug(msg)
             continue
 
           try:
             transcript_id_v = transcript_id_mapping[transcript_id]
-          except KeyError:
-            msg = "KeyError (Transcript ID key not found): {}".format(record)
-            self.get_logger().debug(msg)
+          except KeyError:          
+            if (verbous):
+              msg = "KeyError (Transcript ID key not found): {}".format(record)
+              self.get_logger().debug(msg)
             transcript_id_v = transcript_id
 
           try:
             row = transcripts_dict[transcript_id_v]
             ref_seq = row.seq  # get the seq and desc for the transcript from the fasta of the gtf
             desc = str(row.description)
-          except KeyError:
-            msg = "Transcript {} not found in fasta of the GTF file {}".format(transcript_id_v, record)
-            self.get_logger().debug(msg)
+          except KeyError:          
+            if (verbous):
+              msg = "Transcript {} not found in fasta of the GTF file {}".format(transcript_id_v, record)
+              self.get_logger().debug(msg)
             continue
 
           feature_types = ['exon']
@@ -637,19 +652,24 @@ class EnsemblDataService(ParameterConfiguration):
             if (consequence in self._exclude_consequences or
               (consequence not in self._include_consequences and
                self._include_consequences != ['all'])):
-              msg = "Transcript with unwanted consequences, skipping: {}".format(record)
-              self.get_logger().debug(msg)
+                         
+              if (verbous):
+                msg = "Transcript with unwanted consequences, skipping: {}".format(record)
+                self.get_logger().debug(msg)
               continue
 
           for alt in record.ALT:  # in cases of multiple alternative alleles consider all
-            if alt is None:
-              msg = "ALT info not found, skipping: {}".format(record)
-              self.get_logger().debug(msg)
+            if alt is None:          
+              if (verbous):
+                msg = "ALT info not found, skipping: {}".format(record)
+                self.get_logger().debug(msg)
               continue
             if transcript_id + str(record.REF) + str(
               alt) in processed_transcript_allele:  # because VEP reports affected transcripts per alt allele
-              msg = "Error at line 642, skipping: {}".format(record)
-              self.get_logger().debug(msg)
+                        
+              if (verbous):
+                msg = "Allele already processed, skipping: {}".format(record)
+                self.get_logger().debug(msg)
               continue
 
             processed_transcript_allele.append(transcript_id + str(record.REF) + str(alt))
@@ -657,9 +677,10 @@ class EnsemblDataService(ParameterConfiguration):
 
             try:
               overlap_flag = self.check_overlap(record.POS, record.POS + len(alt), features_info)
-            except TypeError:
-              msg = "Wrong VCF record in {}".format(record)
-              self.get_logger().debug(msg)
+            except TypeError:          
+              if (verbous):
+                msg = "Wrong VCF record in {}".format(record)
+                self.get_logger().debug(msg)
               continue
 
             #msg = "Passed tests: {}".format(record)

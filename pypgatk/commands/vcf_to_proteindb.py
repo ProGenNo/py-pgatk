@@ -18,6 +18,7 @@ this_dir, this_filename = os.path.split(__file__)
 @click.option('-m', '--mito_translation_table', default=2, type=int, help='Mito_trans_table (default 2)')
 @click.option('-p', '--var_prefix', default="var", help="String to add before the variant peptides")
 @click.option('--report_ref_seq', help='In addition to var peps, also report all ref peps', is_flag=True)
+@click.option('--verbous_debug', help='More output into the debug log file', is_flag=True)
 @click.option('-o', '--output_proteindb', default="peptide-database.fa",
               help="Output file name, exits if already exists")
 @click.option('--annotation_field_name', default="CSQ",
@@ -45,7 +46,7 @@ this_dir, this_filename = os.path.split(__file__)
 @click.pass_context
 def vcf_to_proteindb(ctx, config_file, input_fasta, vcf, gene_annotations_gtf, translation_table,
                      mito_translation_table,
-                     var_prefix, report_ref_seq, output_proteindb, annotation_field_name,
+                     var_prefix, report_ref_seq, verbous_debug, output_proteindb, annotation_field_name,
                      af_field, af_threshold, transcript_index, consequence_index,
                      exclude_consequences, skip_including_all_cds, include_consequences,
                      ignore_filters, accepted_filters):
@@ -56,6 +57,7 @@ def vcf_to_proteindb(ctx, config_file, input_fasta, vcf, gene_annotations_gtf, t
                         EnsemblDataService.TRANSLATION_TABLE: translation_table,
                         EnsemblDataService.HEADER_VAR_PREFIX: var_prefix,
                         EnsemblDataService.REPORT_REFERENCE_SEQ: report_ref_seq,
+                        EnsemblDataService.VERBOUS_DEBUG: verbous_debug,
                         EnsemblDataService.PROTEIN_DB_OUTPUT: output_proteindb,
                         EnsemblDataService.ANNOTATION_FIELD_NAME: annotation_field_name,
                         EnsemblDataService.AF_FIELD: af_field, EnsemblDataService.AF_THRESHOLD: af_threshold,
