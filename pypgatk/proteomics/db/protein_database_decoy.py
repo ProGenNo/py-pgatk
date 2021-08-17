@@ -167,11 +167,10 @@ class ProteinDBDecoyService(ParameterConfiguration):
     :param method the method used to compute the decoy
     :return:
     """
-    print('Generating decoy:')
     fasta = SeqIO.parse(self._input_fasta, 'fasta')
     with open(self._output_file, "wt") as output_file:
       for record in fasta:
-        print(record)
+        #print(record)
         seq = str(record.seq)
         decoy_seq = decoy_sequence(seq, mode=method)
 
