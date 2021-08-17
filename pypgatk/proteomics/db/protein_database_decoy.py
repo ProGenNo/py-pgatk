@@ -1,3 +1,5 @@
+## File modified by Jakub Vasicek (jakub.vasicek@uib.no)
+
 import random
 import os
 from Bio import SeqIO
@@ -165,9 +167,11 @@ class ProteinDBDecoyService(ParameterConfiguration):
     :param method the method used to compute the decoy
     :return:
     """
+    print('Generating decoy:')
     fasta = SeqIO.parse(self._input_fasta, 'fasta')
     with open(self._output_file, "wt") as output_file:
       for record in fasta:
+        print(record)
         seq = str(record.seq)
         decoy_seq = decoy_sequence(seq, mode=method)
 
@@ -292,8 +296,16 @@ class ProteinDBDecoyService(ParameterConfiguration):
               cleave(sequence=decoyseq, rule=PYGPATK_ENZYMES.enzymes[self._enzyme]['cleavage rule'], missed_cleavages=0,
                      min_length=self._min_peptide_length))
 
-          # write decoy protein accession and sequence to file
-          outfa.write('>' + self._decoy_prefix + description + '\n')
+          # generate new accession in the header
+          # write decoy protein accession to file
+          if "|" in description:
+            [tag, rest] = description.split('|', 1)
+            new_description = tag + '|' + self._decoy_prefix + rest
+            outfa.write('>' + new_description + '\n')
+          else:
+            outfa.write('>' + self._decoy_prefix + description + '\n')
+
+          # write sequence to file
           outfa.write(decoyseq + '\n')
 
     # Summarise the numbers of target and decoy peptides and their intersection
