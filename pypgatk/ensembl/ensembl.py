@@ -499,7 +499,7 @@ class EnsemblDataService(ParameterConfiguration):
 
     return annotated_vcf+'_annotated.vcf'
 
-  def vcf_to_proteindb(self, vcf_file, input_fasta, gene_annotations_gtf):
+  def vcf_to_proteindb(self, vcf_file, input_fasta, gene_annotations_gtf, gene_annotations_db):
     """
     Generate proteins for variants by modifying sequences of affected transcripts.
     In case of already annotated variants it only considers variants within
@@ -513,7 +513,7 @@ class EnsemblDataService(ParameterConfiguration):
     :return:
     """
 
-    if not self._annotation_field_name:
+    if not self._annotation_field_name and gene_annotations_db:
       vcf_file = self.annoate_vcf(vcf_file, gene_annotations_gtf)
       self._annotation_field_name = 'transcriptOverlaps'
       self._transcript_index = 0
@@ -523,7 +523,10 @@ class EnsemblDataService(ParameterConfiguration):
     if (verbous):
       print("Verbous debug output.")
 
-    db = self.parse_gtf(gene_annotations_gtf, gene_annotations_gtf.replace('.gtf', '.db'))
+    if gene_annotations_db:
+      db = gffutils.FeatureDB(gene_annotations_db)
+    else:
+      db = self.parse_gtf(gene_annotations_gtf, gene_annotations_gtf.replace('.gtf', '.db'))
     # print("This is a modified function for processing the VCF file.")
 
     transcripts_dict = SeqIO.index(input_fasta, "fasta", key_function=self.get_key)

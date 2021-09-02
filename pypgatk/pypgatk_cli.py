@@ -15,6 +15,7 @@ from pypgatk.commands import cbioportal_downloader as cbioportal_downloader_cmd
 from pypgatk.commands import cosmic_to_proteindb as cosmic_to_proteindb_cmd
 from pypgatk.commands import cbioportal_to_proteindb as cbioportal_to_proteindb_cmd
 from pypgatk.commands import threeframe_translation as threeframe_translation_cmd
+from pypgatk.commands import parse_gtf as parse_gtf_cmd
 from pypgatk.commands import vcf_to_proteindb as vcf_to_proteindb_cmd
 from pypgatk.commands import dnaseq_to_proteindb as dnase_to_proteindb_cmd
 from pypgatk.commands import proteindb_decoy as proteindb_decoy_cmd
@@ -35,6 +36,7 @@ cli.add_command(cosmic_downloader_cmd.cosmic_downloader)
 cli.add_command(cosmic_to_proteindb_cmd.cosmic_to_proteindb)
 cli.add_command(cbioportal_to_proteindb_cmd.cbioportal_to_proteindb)
 cli.add_command(threeframe_translation_cmd.threeframe_translation)
+cli.add_command(parse_gtf_cmd.parse_gtf)
 cli.add_command(vcf_to_proteindb_cmd.vcf_to_proteindb)
 cli.add_command(dnase_to_proteindb_cmd.dnaseq_to_proteindb)
 cli.add_command(proteindb_decoy_cmd.generate_database)

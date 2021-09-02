@@ -14,6 +14,7 @@ this_dir, this_filename = os.path.split(__file__)
 @click.option('-f', '--input_fasta', help='Path to the transcript sequence')
 @click.option('-v', '--vcf', help='Path to the VCF file')
 @click.option('-g', '--gene_annotations_gtf', help='Path to the gene annotations file')
+@click.option('-db', '--gene_annotations_db', help='Path to the gene annotations DB file')
 @click.option('-t', '--translation_table', default=1, type=int, help="Translation table (Default 1) ")
 @click.option('-m', '--mito_translation_table', default=2, type=int, help='Mito_trans_table (default 2)')
 @click.option('-p', '--var_prefix', default="var", help="String to add before the variant peptides")
@@ -44,7 +45,7 @@ this_dir, this_filename = os.path.split(__file__)
               is_flag=True)
 @click.option('--accepted_filters', default='', help="Accepted filters for variant parsing")
 @click.pass_context
-def vcf_to_proteindb(ctx, config_file, input_fasta, vcf, gene_annotations_gtf, translation_table,
+def vcf_to_proteindb(ctx, config_file, input_fasta, vcf, gene_annotations_gtf, gene_annotations_db, translation_table,
                      mito_translation_table,
                      var_prefix, report_ref_seq, verbous_debug, output_proteindb, annotation_field_name,
                      af_field, af_threshold, transcript_index, consequence_index,
