@@ -283,7 +283,7 @@ class EnsemblDataService(ParameterConfiguration):
                          keep_order=True, disable_infer_transcripts=True, disable_infer_genes=True,
                          verbose=True,
                          force=False)
-    except Exception as e:  # already exists
+    except Exception as e:  # already exists, or error
       print(str(e), gtf_db_file)
 
     db = gffutils.FeatureDB(gtf_db_file)
@@ -513,7 +513,7 @@ class EnsemblDataService(ParameterConfiguration):
     :return:
     """
 
-    if not self._annotation_field_name and gene_annotations_db:
+    if not self._annotation_field_name and gene_annotations_gtf:
       vcf_file = self.annoate_vcf(vcf_file, gene_annotations_gtf)
       self._annotation_field_name = 'transcriptOverlaps'
       self._transcript_index = 0

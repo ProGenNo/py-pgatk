@@ -71,4 +71,4 @@ def vcf_to_proteindb(ctx, config_file, input_fasta, vcf, gene_annotations_gtf, g
                         EnsemblDataService.ACCEPTED_FILTERS: accepted_filters}
 
   ensembl_data_service = EnsemblDataService(config_file, pipeline_arguments)
-  ensembl_data_service.vcf_to_proteindb(vcf, input_fasta, gene_annotations_gtf)
+  ensembl_data_service.vcf_to_proteindb(vcf, input_fasta, gene_annotations_gtf, gene_annotations_db)
