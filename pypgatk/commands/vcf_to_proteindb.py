@@ -1,3 +1,4 @@
+## File modified by Jakub Vasicek (jakub.vasicek@uib.no)
 import os
 
 import click

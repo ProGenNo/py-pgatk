@@ -1,3 +1,4 @@
+## File modified by Jakub Vasicek (jakub.vasicek@uib.no)
 import logging
 import os
 
@@ -23,6 +24,7 @@ this_dir, this_filename = os.path.split(__file__)
                    'pgdbdeep: method developed for proteogenomics developed by pypgatk',
               default = 'protein-reverse')
 @click.option('-d', '--decoy_prefix', help='Set accession prefix for decoy proteins in output. Default=DECOY_', default='DECOY_')
+@click.option('-ds', '--decoy_suffix', help='Set accession suffix for decoy proteins in output. Works only with the flag --suffix. Default=_DECOY', default='_DECOY')
 @click.option('-e', '--enzyme', default='Trypsin', help='Enzyme used for clevage the protein sequence (Default: Trypsin)', type = click.Choice(PYGPATK_ENZYMES.enzymes.keys()))
 @click.option('--cleavage_position', default='c', type=click.Choice(['c','n']),help='Set cleavage to be c or n terminal of specified cleavage sites. Options [c, n], Default = c')
 @click.option('-s', '--max_missed_cleavages', default = 0, type = int, help = 'Number of allowed missed cleavages in the protein sequence when digestion is performed')
@@ -35,12 +37,13 @@ this_dir, this_filename = os.path.split(__file__)
 @click.option('--no_isobaric', help='Do not make decoy peptides isobaric. Default=false', is_flag = True, default = False)
 @click.option('--keep_target_hits', help='Keep peptides duplicate in target and decoy databases', is_flag = True, default = False)
 @click.option('--memory_save', help='Slower but uses less memory (does not store decoy peptide list). Default=false', is_flag = True, default = False)
+@click.option('--use_suffix', help='Use suffix for decoy accession number instead of prefix. Default=false', is_flag = True, default = False)
 @click.pass_context
 def generate_database(ctx, config_file: str, output_database: str, input_database: str, method: str,
-                      decoy_prefix: str , enzyme: str, cleavage_position: str,
+                      decoy_prefix: str , decoy_suffix: str, enzyme: str, cleavage_position: str,
                       max_missed_cleavages: int, min_peptide_length: int, max_peptide_length : int,
                       max_iterations: int, do_not_shuffle: bool , do_not_switch: bool, temp_file: str,
-                      no_isobaric: bool, keep_target_hits: bool, memory_save: bool):
+                      no_isobaric: bool, keep_target_hits: bool, memory_save: bool, use_suffix: bool):
   if config_file is None:
     msg = "The config file for the pipeline is missing, please provide one "
     logging.error(msg)
@@ -86,6 +89,9 @@ def generate_database(ctx, config_file: str, output_database: str, input_databas
 
   if decoy_prefix is not None:
     pipeline_arguments[ProteinDBDecoyService.CONFIG_DECOY_PREFIX] = decoy_prefix
+    
+  if decoy_suffix is not None:
+    pipeline_arguments[ProteinDBDecoyService.CONFIG_DECOY_SUFFIX] = decoy_suffix
 
   if temp_file is not None:
     pipeline_arguments[ProteinDBDecoyService.CONFIG_TEMP_FILE] = temp_file
@@ -98,6 +104,9 @@ def generate_database(ctx, config_file: str, output_database: str, input_databas
 
   if memory_save is not None:
     pipeline_arguments[ProteinDBDecoyService.CONFIG_MEMORY_SAVE] = memory_save
+
+  if use_suffix is not None:
+    pipeline_arguments[ProteinDBDecoyService.CONFIG_USE_SUFFIX] = use_suffix
 
   proteindb_decoy = ProteinDBDecoyService(config_file, pipeline_arguments)
   proteindb_decoy.decoy_database()

@@ -27,9 +27,11 @@ class ProteinDBDecoyService(ParameterConfiguration):
   CONFIG_DO_NOT_SUFFLE = 'do_not_shuffle'
   CONFIG_DO_NOT_SWITCH = 'do_not_switch'
   CONFIG_DECOY_PREFIX = 'decoy_prefix'
+  CONFIG_DECOY_SUFFIX = 'decoy_suffix'
   CONFIG_TEMP_FILE = 'temp_file'
   CONFIG_NO_ISOBARIC = 'no_isobaric'
   CONFIG_MEMORY_SAVE = 'memory_save'
+  CONFIG_USE_SUFFIX = 'use_suffix'
   CONFIG_KEEP_TARGET_HITS = 'keep_target_hits'
 
   def __init__(self, config_file, pipeline_arguments):
@@ -62,6 +64,16 @@ class ProteinDBDecoyService(ParameterConfiguration):
       self._decoy_prefix = self.get_default_parameters()[self.CONFIG_KEY_PROTEINDB_DECOY][self.CONFIG_DECOY_PREFIX]
     elif self.CONFIG_DECOY_PREFIX in self.get_pipeline_parameters():
       self._decoy_prefix = self.get_pipeline_parameters()[self.CONFIG_DECOY_PREFIX]
+      
+    if self.CONFIG_DECOY_SUFFIX in self.get_default_parameters()[self.CONFIG_KEY_PROTEINDB_DECOY]:
+      self._decoy_suffix = self.get_default_parameters()[self.CONFIG_KEY_PROTEINDB_DECOY][self.CONFIG_DECOY_SUFFIX]
+    elif self.CONFIG_DECOY_SUFFIX in self.get_pipeline_parameters():
+      self._decoy_suffix = self.get_pipeline_parameters()[self.CONFIG_DECOY_SUFFIX]
+
+    if self.CONFIG_USE_SUFFIX in self.get_default_parameters()[self.CONFIG_KEY_PROTEINDB_DECOY]:
+      self._use_suffix = self.get_default_parameters()[self.CONFIG_KEY_PROTEINDB_DECOY][self.CONFIG_USE_SUFFIX]
+    elif self.CONFIG_USE_SUFFIX in self.get_pipeline_parameters(): 
+      self._use_suffix = self.get_pipeline_parameters()[self.CONFIG_USE_SUFFIX]
 
     if self.CONFIG_CLEAVAGE_POSITION in self.get_default_parameters()[self.CONFIG_KEY_PROTEINDB_DECOY]:
       self._cleavage_position = self.get_default_parameters()[self.CONFIG_KEY_PROTEINDB_DECOY][self.CONFIG_CLEAVAGE_POSITION]
@@ -181,7 +193,10 @@ class ProteinDBDecoyService(ParameterConfiguration):
 
         output_file.write('>' + record.id + " " + record.description + '\n')
         output_file.write(str(record.seq) + '\n')
-        output_file.write('>' + self._decoy_prefix + record.id + '\n')
+        if (self._use_suffix):
+          output_file.write('>' + record.id + self._decoy_suffix + '\n')
+        else: 
+          output_file.write('>' + self._decoy_prefix + record.id + '\n')
         output_file.write(decoy_seq + '\n')
 
     output_file.close()
@@ -228,12 +243,14 @@ class ProteinDBDecoyService(ParameterConfiguration):
     for record in fasta:
       peptides = cleave(sequence=str(record.seq), rule=PYGPATK_ENZYMES.enzymes[self._enzyme]['cleavage rule'],
                         missed_cleavages=self._max_missed_cleavages, min_length=self._min_peptide_length)
+      if self._use_suffix and self._decoy_suffix in record.id:
+        decoy_sequence = decoy_sequence + str(record.seq)
       if self._decoy_prefix in record.id:
         decoy_sequence = decoy_sequence + str(record.seq)
       else:
         target_sequence = target_sequence + str(record.seq)
       for peptide in peptides:
-        if self._decoy_prefix in record.id:
+        if (self._use_suffix and self._decoy_suffix in record.id) or (not self._use_suffix and self._decoy_prefix in record.id):
           decoy_peptides[peptide] = 'decoy'
           if peptide in target_peptides:
             target_peptides.pop(peptide)
@@ -303,11 +320,19 @@ class ProteinDBDecoyService(ParameterConfiguration):
           # generate new accession in the header
           # write decoy protein accession to file
           if "|" in description:
-            [tag, rest] = description.split('|', 1)
-            new_description = tag + '|' + self._decoy_prefix + rest
+            split = description.split('|', 2)
+            if self._use_suffix:
+              new_description = split[0] + '|' + split[1] + self._decoy_suffix
+            else:
+              new_description = split[0] + '|' + self._decoy_prefix + split[1]
+            if len(split) > 2:
+              new_description += "|" + split[2]
             outfa.write('>' + new_description + '\n')
           else:
-            outfa.write('>' + self._decoy_prefix + description + '\n')
+            if self._use_suffix:
+              outfa.write('>' + description + self._decoy_suffix + '\n')
+            else:
+              outfa.write('>' + self._decoy_prefix + description + '\n')
 
           # write sequence to file
           outfa.write(decoyseq + '\n')
@@ -524,8 +549,12 @@ class ProteinDBDecoyService(ParameterConfiguration):
           if checked_decoy_peps:
             revprotseq.append(''.join(checked_decoy_peps))
 
-        outfa.write(
-          '>{}\n{}\n'.format(self._decoy_prefix + str(record.id) + ' ' + record.description, '*'.join(revprotseq)))
+        if (self._use_suffix):
+          outfa.write(
+            '>{}\n{}\n'.format(str(record.id) + self._decoy_suffix + ' ' + record.description, '*'.join(revprotseq)))
+        else :
+          outfa.write(
+            '>{}\n{}\n'.format(self._decoy_prefix + str(record.id) + ' ' + record.description, '*'.join(revprotseq)))
         decoys.append('*'.join(revprotseq))
 
       with open(self._output_file.replace('.fa', '') + '_noAlternative.fa', 'w') as noAlternative_outfa:
