@@ -752,7 +752,7 @@ class EnsemblDataService(ParameterConfiguration):
                                 self.write_output(seq_id='_'.join([self._header_var_prefix + str(record_id),
                                                                    '.'.join([str(record.CHROM), str(record.POS),
                                                                              str(record.REF), str(alt)]),
-                                                                   transcript_id_v]),
+                                                                   transcript_id_v], "splicing:" + str(features_info)]),
                                                   desc='',
                                                   seqs=alt_orfs,
                                                   prots_fn=prots_fn,
