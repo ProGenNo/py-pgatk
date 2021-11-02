@@ -562,7 +562,8 @@ class EnsemblDataService(ParameterConfiguration):
             vcf_reader = vcf.Reader(open(vcf_file, 'r'))
 
             for record in vcf_reader:
-                #msg = "Processing: {}".format(record)
+                # msg = "Processing: {}".format(record)
+                # print(msg)
                 # self.get_logger().debug(msg)
 
                 if record.ALT == [None] or record.REF == [None]:
@@ -749,10 +750,14 @@ class EnsemblDataService(ParameterConfiguration):
                                 record_id = ""
                                 if record.ID:
                                     record_id = '_' + str(record.ID)
+
+                                # splicing_info = 'Splicing:chr' + str(chrom) + ".".join(list(map(lambda x: "[" + "-".join([str(val) for val in x]) + "]", features_info)))
+                                # print(splicing_info)
+
                                 self.write_output(seq_id='_'.join([self._header_var_prefix + str(record_id),
                                                                    '.'.join([str(record.CHROM), str(record.POS),
                                                                              str(record.REF), str(alt)]),
-                                                                   transcript_id_v, "splicing:" + str(features_info)]),
+                                                                   transcript_id_v]),
                                                   desc='',
                                                   seqs=alt_orfs,
                                                   prots_fn=prots_fn,
