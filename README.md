@@ -24,7 +24,7 @@ Alternatively, for the latest version, clone this repo and go into its directory
 
 ```
 git clone https://github.com/ProGenNo/py-pgatk-UiB-fork.git
-cd py-pgatk
+cd py-pgatk-UiB-fork
 # you might want to create a virtualenv for pypgatk before installing
 python3 -m pip install .
 ```
